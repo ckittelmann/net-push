@@ -1,63 +1,98 @@
 ﻿using System;
-using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 
 namespace NetPush.Core
 {
     public abstract class BaseService<TNotification, TConfiguration> where TNotification : BaseNotification where TConfiguration : BaseConfiguration
     {
-		private readonly ConcurrentQueue<TNotification> _queue = new ConcurrentQueue<TNotification>();
+        private readonly List<TNotification> _queue = new List<TNotification>();
+        private readonly object _listLock = new object();
+        
+        public event Action<NotificationFailedResult<TNotification>> NotificationFailed;
+        public event Action<NotificationSucceededResult<TNotification>> NotificationSucceeded;
 
+        private Timer _timer;
 
-	    private Timer _timer;
+        public TConfiguration Configuration { get; protected set; }
 
-	    public TConfiguration Configuration { get; protected set; }
+        public void QueueNotification(TNotification notification)
+        {
+            lock (_listLock)
+            {
+                _queue.Add(notification);
+            }
+        }
 
-		public void QueueNotification(TNotification notification)
-	    {
-			_queue.Enqueue(notification);
-		}
+        public TNotification GetNextQueueElement()
+        {
+            if (_queue.Any())
+            {
+                lock (_listLock)
+                {
+                    var notification = _queue.FirstOrDefault(n => n.NextTry <= DateTime.UtcNow);
+                    _queue.Remove(notification);
+                    return notification;
+                }
+            }
+            
+            return null;
+        }
 
-	    public TNotification GetNextQueueElement()
-	    {
-		    _queue.TryDequeue(out var notification);
+        public void StartService()
+        {
+            _timer = new Timer(HandleTimeTickInternal, null, 0, Timeout.Infinite);
+        }
 
-		    return notification;
-	    }
+        public void StopService()
+        {
+            _timer.Dispose();
+        }
 
-		public void StartService()
-	    {
-		    _timer = new Timer(HandleTimeTickInternal, _queue, 0, Timeout.Infinite);
-	    }
+        private void HandleTimeTickInternal(object state)
+        {
+            var nextNotification = GetNextQueueElement();
 
-		public void StopService()
-	    {
-		    _timer.Dispose();
-		}
+            if (nextNotification == null)
+            {
+                _timer.Change(10000, Timeout.Infinite);
+                return;
+            }
 
-	    private void HandleTimeTickInternal(object state)
-	    {
-		    if (_queue.IsEmpty)
-		    {
-			    _timer.Change(_queue.IsEmpty ? 10000 : 0, Timeout.Infinite);
-			    return;
-		    }
+            try
+            {
+                SendMessage(nextNotification);
+            }
+            catch (Exception ex)
+            {
+                FireNotificationFailed(nextNotification, "unexpected error", ex);
+            }
+            finally
+            {
+                _timer.Change(0, Timeout.Infinite);
+            }
+        }
 
-		    var nextNotification = GetNextQueueElement();
+        protected void FireNotificationSucceeded(TNotification notification, string message)
+        {
+            NotificationSucceeded?.Invoke(new NotificationSucceededResult<TNotification>(notification, message));
+        }
 
-			try
-			{
-				SendMessage(nextNotification);
-			}
-		    catch (Exception e)
-		    {
-			    // TODO: logging and maximum retry
-				_queue.Enqueue(nextNotification);
-		    }
+        protected void FireNotificationFailed(TNotification notification, string message, Exception ex = null)
+        {
+            NotificationFailed?.Invoke(new NotificationFailedResult<TNotification>(notification, message, ex));
 
-		    _timer.Change(0, Timeout.Infinite);
-		}
+            notification.ErrorCount++;
 
-	    protected abstract void SendMessage(TNotification notification);
+            // try at least 3 times
+            if (notification.ErrorCount < 3)
+            {
+                notification.NextTry = DateTime.UtcNow.AddMinutes(2);
+                QueueNotification(notification);
+            }
+        }
+
+        protected abstract void SendMessage(TNotification notification);
     }
 }
