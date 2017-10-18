@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using NetPush.Core;
+using NetPush.Core.Notification;
 
 namespace NetPush.APNsToken
 {

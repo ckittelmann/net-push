@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Net.Http;
 using HttpTwo;
 using Jose;
-using NetPush.Core;
+using NetPush.Core.Service;
 using Newtonsoft.Json.Linq;
 
 namespace NetPush.APNsToken

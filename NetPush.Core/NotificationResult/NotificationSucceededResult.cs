@@ -1,4 +1,6 @@
-﻿namespace NetPush.Core
+﻿using NetPush.Core.Notification;
+
+namespace NetPush.Core.NotificationResult
 {
     public class NotificationSucceededResult<TNotification> where TNotification : BaseNotification
     {

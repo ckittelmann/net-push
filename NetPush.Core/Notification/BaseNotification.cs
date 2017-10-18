@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace NetPush.Core
+namespace NetPush.Core.Notification
 {
     public class BaseNotification
     {

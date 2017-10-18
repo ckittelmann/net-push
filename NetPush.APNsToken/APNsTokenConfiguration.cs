@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Security.Cryptography;
 using NetPush.Core;
+using NetPush.Core.Configuration;
 
 namespace NetPush.APNsToken
 {

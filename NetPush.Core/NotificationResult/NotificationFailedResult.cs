@@ -1,6 +1,7 @@
 ﻿using System;
+using NetPush.Core.Notification;
 
-namespace NetPush.Core
+namespace NetPush.Core.NotificationResult
 {
     public class NotificationFailedResult<T> : NotificationSucceededResult<T> where T: BaseNotification
     {

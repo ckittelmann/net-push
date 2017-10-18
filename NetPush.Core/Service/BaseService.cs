@@ -2,8 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using NetPush.Core.Configuration;
+using NetPush.Core.Notification;
+using NetPush.Core.NotificationResult;
 
-namespace NetPush.Core
+namespace NetPush.Core.Service
 {
     public abstract class BaseService<TNotification, TConfiguration> where TNotification : BaseNotification where TConfiguration : BaseConfiguration
     {
