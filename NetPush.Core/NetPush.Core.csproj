@@ -32,19 +32,13 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Net.Http" />
-    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BaseConfiguration.cs" />
-    <Compile Include="BaseNotification.cs" />
-    <Compile Include="BaseService.cs" />
-    <Compile Include="NotificationFailedResult.cs" />
-    <Compile Include="NotificationSucceededResult.cs" />
+    <Compile Include="Configuration\BaseConfiguration.cs" />
+    <Compile Include="Notification\BaseNotification.cs" />
+    <Compile Include="Service\BaseService.cs" />
+    <Compile Include="NotificationResult\NotificationFailedResult.cs" />
+    <Compile Include="NotificationResult\NotificationSucceededResult.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

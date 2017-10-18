@@ -10,8 +10,6 @@ namespace NetPush.APNsToken
 {
     public class APNsTokenService : BaseService<APNsNotification, APNsTokenConfiguration>
     {
-        private readonly HttpClient _httpClient = new HttpClient(new Http2MessageHandler());
-
         public APNsTokenService(APNsTokenConfiguration configuration)
         {
             Configuration = configuration;
@@ -63,20 +61,24 @@ namespace NetPush.APNsToken
 
             try
             {
-                var responseMessage = _httpClient.SendAsync(requestMessage);
-
-                // TODO: async can't be used, think its a problem of HttpTwo
-                if (responseMessage.Result.StatusCode == System.Net.HttpStatusCode.OK)
+                // TODO: we shouldn't create new httpClient every run
+                // but at the moment there is no stable http2 implementation and this one works only for some requests until ip of apple service changes
+                using (var httpClient = new HttpClient(new Http2MessageHandler()))
                 {
-                    FireNotificationSucceeded(notification, "Message successfully sent");
-                }
-                else
-                {
-                    var body = await responseMessage.Result.Content.ReadAsStringAsync();
-                    var jObject = JObject.Parse(body);
-                    var reason = jObject.Value<string>("reason");
+                    var responseMessage = httpClient.SendAsync(requestMessage);
+                    // TODO: async can't be used, think its a problem of HttpTwo
+                    if (responseMessage.Result.StatusCode == System.Net.HttpStatusCode.OK)
+                    {
+                        FireNotificationSucceeded(notification, "Message successfully sent");
+                    }
+                    else
+                    {
+                        var body = await responseMessage.Result.Content.ReadAsStringAsync();
+                        var jObject = JObject.Parse(body);
+                        var reason = jObject.Value<string>("reason");
 
-                    FireNotificationFailed(notification, $"Failed to send message: {reason}");
+                        FireNotificationFailed(notification, $"Failed to send message: {reason}");
+                    }
                 }
             }
             catch (Exception ex)

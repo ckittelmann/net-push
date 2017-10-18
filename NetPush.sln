@@ -9,8 +9,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Apple", "Apple", "{621F7C2A
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetPush.APNsToken", "NetPush.APNsToken\NetPush.APNsToken.csproj", "{2C54CF75-01EF-4136-BBC1-C4F78379AE88}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleApp1", "ConsoleApp1\ConsoleApp1.csproj", "{F2094836-5263-41AD-90DA-669287C933BA}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -25,10 +23,6 @@ Global
 		{2C54CF75-01EF-4136-BBC1-C4F78379AE88}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2C54CF75-01EF-4136-BBC1-C4F78379AE88}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2C54CF75-01EF-4136-BBC1-C4F78379AE88}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F2094836-5263-41AD-90DA-669287C933BA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F2094836-5263-41AD-90DA-669287C933BA}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F2094836-5263-41AD-90DA-669287C933BA}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F2094836-5263-41AD-90DA-669287C933BA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
