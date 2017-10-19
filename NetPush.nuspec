@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package >
   <metadata>
-    <id>Package</id>
+    <id>NetPush</id>
     <version>0.0.1</version>
     <authors>ckittelmann</authors>
     <owners>ckittelmann</owners>
