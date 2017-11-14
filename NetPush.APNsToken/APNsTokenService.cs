@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net.Http;
-using HttpTwo;
 using Jose;
 using NetPush.Core.Service;
 using Newtonsoft.Json.Linq;
@@ -63,7 +62,7 @@ namespace NetPush.APNsToken
             {
                 // TODO: we shouldn't create new httpClient every run
                 // but at the moment there is no stable http2 implementation and this one works only for some requests until ip of apple service changes
-                using (var httpClient = new HttpClient(new Http2MessageHandler()))
+                using (var httpClient = new HttpClient(new Http2Handler()))
                 {
                     var responseMessage = httpClient.SendAsync(requestMessage);
                     // TODO: async can't be used, think its a problem of HttpTwo
